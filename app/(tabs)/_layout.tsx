@@ -24,7 +24,7 @@ export default function TabLayout() {
         headerShown: false,
         tabBarStyle: styles.tabBar,
         tabBarActiveTintColor: Colors.accent,
-        tabBarInactiveTintColor: Colors.textDim,
+        tabBarInactiveTintColor: Colors.textSecondary,
         tabBarLabelStyle: styles.tabLabel,
         tabBarItemStyle: styles.tabItem,
       }}
@@ -34,6 +34,16 @@ export default function TabLayout() {
         options={{
           title: "Controller",
           tabBarLabel: "CTRL",
+          tabBarIcon: ({ focused, color }) => (
+            <TabIcon focused={focused} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="pads"
+        options={{
+          title: "Pads",
+          tabBarLabel: "PADS",
           tabBarIcon: ({ focused, color }) => (
             <TabIcon focused={focused} color={color} />
           ),

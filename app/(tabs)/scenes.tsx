@@ -70,7 +70,7 @@ export default function ScenesScreen() {
   };
 
   const handleSceneMenu = (scene: Scene) => {
-    Alert.alert(scene.name, undefined, [
+    Alert.alert(scene.name, null as unknown as string, [
       {
         text: "Edit CC Values",
         onPress: () => setCcEditScene(scene),

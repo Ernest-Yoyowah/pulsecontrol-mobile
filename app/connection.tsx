@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   View,
   Text,
@@ -34,6 +34,7 @@ export default function ConnectionScreen() {
   const [inputUrl, setInputUrl] = useState(url);
   const [scannerOpen, setScannerOpen] = useState(false);
   const [permission, requestPermission] = useCameraPermissions();
+  const scannedRef = useRef(false);
 
   const handleConnect = () => {
     const trimmed = inputUrl.trim();
@@ -47,18 +48,26 @@ export default function ConnectionScreen() {
   };
 
   const handleScanPress = async () => {
+    scannedRef.current = false;
     if (!permission?.granted) {
       const result = await requestPermission();
-      if (!result.granted) return;
+      if (!result || !result.granted) return;
     }
     setScannerOpen(true);
   };
 
   const handleBarcodeScanned = ({ data }: { data: string }) => {
+    if (scannedRef.current) return;
     if (data.startsWith("ws://") || data.startsWith("wss://")) {
+      scannedRef.current = true;
       setInputUrl(data);
       setScannerOpen(false);
     }
+  };
+
+  const handleCloseScanner = () => {
+    scannedRef.current = false;
+    setScannerOpen(false);
   };
 
   const isConnected = status === "connected";
@@ -160,20 +169,30 @@ export default function ConnectionScreen() {
               <Text style={styles.btnSecondaryText}>DISCONNECT</Text>
             </TouchableOpacity>
           </View>
+        ) : isConnecting ? (
+          <View style={styles.actions}>
+            <TouchableOpacity
+              style={[styles.btn, styles.btnPrimary, styles.btnDisabled]}
+              activeOpacity={1}
+              disabled
+            >
+              <Text style={styles.btnPrimaryText}>CONNECTING...</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.btn, styles.btnCancel]}
+              onPress={disconnect}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.btnCancelText}>CANCEL</Text>
+            </TouchableOpacity>
+          </View>
         ) : (
           <TouchableOpacity
-            style={[
-              styles.btn,
-              styles.btnPrimary,
-              isConnecting && styles.btnDisabled,
-            ]}
+            style={[styles.btn, styles.btnPrimary]}
             onPress={handleConnect}
             activeOpacity={0.8}
-            disabled={isConnecting}
           >
-            <Text style={styles.btnPrimaryText}>
-              {isConnecting ? "CONNECTING..." : "CONNECT"}
-            </Text>
+            <Text style={styles.btnPrimaryText}>CONNECT</Text>
           </TouchableOpacity>
         )}
 
@@ -186,11 +205,10 @@ export default function ConnectionScreen() {
         </TouchableOpacity>
       </ScrollView>
 
-      {/* QR Scanner Modal */}
       <Modal
         visible={scannerOpen}
         animationType="slide"
-        onRequestClose={() => setScannerOpen(false)}
+        onRequestClose={handleCloseScanner}
       >
         <View style={styles.scannerRoot}>
           <CameraView
@@ -206,7 +224,7 @@ export default function ConnectionScreen() {
             </Text>
             <TouchableOpacity
               style={styles.scanCancelBtn}
-              onPress={() => setScannerOpen(false)}
+              onPress={handleCloseScanner}
               activeOpacity={0.8}
             >
               <Text style={styles.scanCancelText}>CANCEL</Text>
@@ -351,6 +369,16 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
     borderWidth: 1,
     borderColor: Colors.border,
+  },
+  btnCancel: {
+    backgroundColor: "transparent",
+    borderWidth: 1,
+    borderColor: Colors.error,
+  },
+  btnCancelText: {
+    ...Typography.label,
+    color: Colors.error,
+    fontSize: 12,
   },
   btnDisabled: {
     opacity: 0.5,

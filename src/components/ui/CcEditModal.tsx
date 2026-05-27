@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   ScrollView,
   StyleSheet,
-  KeyboardAvoidingView,
   Platform,
 } from "react-native";
 import { Scene } from "../../types/scene";
@@ -70,10 +69,7 @@ export function CcEditModal({ visible, scene, onUpdate, onClose }: Props) {
       animationType="fade"
       onRequestClose={onClose}
     >
-      <KeyboardAvoidingView
-        style={styles.overlay}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-      >
+      <View style={styles.overlay}>
         <View style={styles.card}>
           <View style={styles.header}>
             <Text style={styles.title}>
@@ -119,7 +115,7 @@ export function CcEditModal({ visible, scene, onUpdate, onClose }: Props) {
             <Text style={styles.hint}>Values 0 – 127 · Tap field to edit</Text>
           </ScrollView>
         </View>
-      </KeyboardAvoidingView>
+      </View>
     </Modal>
   );
 }

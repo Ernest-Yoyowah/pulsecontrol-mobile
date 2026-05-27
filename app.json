@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "pulsecontrol-mobile",
+    "name": "PulseControl",
     "slug": "pulsecontrol-mobile",
     "version": "1.0.0",
     "orientation": "landscape",
@@ -13,9 +13,23 @@
       "backgroundColor": "#080808"
     },
     "ios": {
-      "supportsTablet": true
+      "bundleIdentifier": "studio.ernestkeyz.pulsecontrol",
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "Used to scan QR codes for wireless connection setup.",
+        "NSLocalNetworkUsageDescription": "Used to connect to PulseControl Bridge on your local Wi-Fi network."
+      }
     },
     "android": {
+      "package": "studio.ernestkeyz.pulsecontrol",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.INTERNET",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.CAMERA",
+        "android.permission.INTERNET",
+        "android.permission.RECORD_AUDIO"
+      ],
       "adaptiveIcon": {
         "backgroundColor": "#080808",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -29,6 +43,26 @@
       "themeColor": "#080808",
       "backgroundColor": "#080808"
     },
-    "plugins": ["expo-router"]
+    "plugins": [
+      "expo-router",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Used to scan QR codes for wireless connection setup."
+        }
+      ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "32cc974b-d5a7-4db5-b749-fbc369b65d16"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/32cc974b-d5a7-4db5-b749-fbc369b65d16"
+    }
   }
 }
